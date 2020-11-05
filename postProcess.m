@@ -142,7 +142,6 @@ shift_rep(i,:,:) = repelem(shift_3D(i,:),length(mup),1);
 end
 
 % %% Raywise
-% D=50;
 % bixelsPerRay_accum= [0 cumsum([stf.numOfBixelsPerRay])];
 % shift_3D = zeros(D,3);
 % shift_rep = zeros(D,length(mup),3);

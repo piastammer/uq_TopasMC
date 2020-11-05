@@ -134,12 +134,42 @@ shift=[];
 shift_rep=[];
 K_sum=cumsum(K);
 
+%% Perfectly correlated
 shift_3D=quasimvnrnd(mue,diag(sigmae),D,'halton');
 
-D=1;
 for i=1:D
 shift_rep(i,:,:) = repelem(shift_3D(i,:),length(mup),1);
 end
+
+% %% Raywise
+% D=50;
+% bixelsPerRay_accum= [0 cumsum([stf.numOfBixelsPerRay])];
+% shift_3D = zeros(D,3);
+% shift_rep = zeros(D,length(mup),3);
+% for i=1:stf.numOfRays
+%     shift_3D=quasimvnrnd(mue,diag(sigmae),D,'halton');
+%     for j=1:stf.numOfBixelsPerRay
+%      shift_rep(:,bixelsPerRay_accum(j)+i,:)=shift_3D;
+%     end
+% end
+% 
+% %% Beamwise
+% shift_3D = zeros(D,3);
+% shift_rep = zeros(D,length(mup),3);
+% for r=1:size(rot_angles,1)
+%     shift_3D=quasimvnrnd(mue,diag(sigmae),D,'halton');
+%     for i=1:K(r+1)
+%      shift_rep(:,K_sum(r)+i,:)=shift_3D;
+%     end
+% end
+% 
+% %% Independent
+% shift_rep = zeros(D,length(mup),3);
+% for i=1:length(mup)
+%     shift_rep(:,i,:)=quasimvnrnd(mue,diag(sigmae),D,'halton');
+% end
+
+%% 
 for i=1:D
 for r=1:size(rot_angles,1)
     tmp = rotateAxis(squeeze(shift_rep(i,K_sum(r)+1:K_sum(r+1),:))',rot_angles(r,1),rot_angles(r,2))';

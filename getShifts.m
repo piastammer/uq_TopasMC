@@ -12,35 +12,36 @@ end
 
 elseif strcmp(correlation_type,'ray')
 %% Raywise
-shift_3D = zeros(D,3);
+numOfRays = [0 [stf(:).numOfRays]];
+totalNumOfRays=sum(numOfRays);
+shift_3D=mvnrnd(mue,diag(sigmae),totalNumOfRays*D);
 shift_rep = zeros(D,length(mup),3);
 
 for r=1:numel(stf)
     bixelsPerRay_accum= [0 cumsum([stf(r).numOfBixelsPerRay])];
 for i=1:stf(r).numOfRays
-    shift_3D=quasimvnrnd(mue,diag(sigmae),D,'halton');
     for j=1:stf(r).numOfBixelsPerRay
-     shift_rep(:,bixelsPerRay_accum(j)+i,:)=shift_3D;
+     shift_rep(:,bixelsPerRay_accum(j)+i,:)=shift_3D((r-1)*D*numOfRays(r)+D*(i-1)+1:(r-1)*D*numOfRays(r)+D*(i-1)+D,:);
     end
 end
 end
 
 elseif strcmp(correlation_type,'beam')
 %% Beamwise
-shift_3D = zeros(D,3);
+shift_3D=mvnrnd(mue,diag(sigmae),numel(stf)*D);
 shift_rep = zeros(D,length(mup),3);
 for r=1:numel(stf)
-    shift_3D=quasimvnrnd(mue,diag(sigmae),D,'halton');
     for i=1:K(r+1)
-     shift_rep(:,K_sum(r)+i,:)=shift_3D;
+     shift_rep(:,K_sum(r)+i,:)=shift_3D((r-1)*D+1:(r-1)*D+D,:);
     end
 end
 
 elseif strcmp(correlation_type,'diag')
 %% Independent
 shift_rep = zeros(D,length(mup),3);
+shift_3D=mvnrnd(mue,diag(sigmae),length(mup)*D);
 for i=1:length(mup)
-    shift_rep(:,i,:)=quasimvnrnd(mue,diag(sigmae),D,'halton');
+    shift_rep(:,i,:)=shift_3D((i-1)*D+1:(i-1)*D+D,:);
 end
 
 else 

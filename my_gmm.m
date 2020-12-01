@@ -3,12 +3,12 @@ classdef my_gmm
 %defined in different rotated coordinate systems
 
     properties
-        mu     % Kxd matrix with means of components
-        sigma  % Kxdxd/Kxdx1 matrix with covariance matrices/diagonal elements
-        angles % Kx2 rotation angles for components
-        mu_energy %(Number of bixels)x1
-        sigma_energy %scalar
-        w %weight vector
+        mu     % Kxd matrix with means of components (means of positions)
+        sigma  % Kxdxd/Kxdx1 matrix with covariance matrices/diagonal elements (variance of positions)
+        angles % Kx2 rotation angles for components (beam angles)
+        mu_energy %(Number of bixels)x1 (mean of energies)
+        sigma_energy %scalar (variance of energies)
+        w %weight vector (weights of components in mixture model)
         idx %indices to keep after rotation
     end
     
@@ -46,7 +46,7 @@ classdef my_gmm
 %                 p_2 = normpdf(z_2);
 %                 p(n_beams(i)+1:n_beams(i+1))= sum(mvnpdf(x_rot2D,obj.mu(:,K(i)+1:K(i+1))',obj.sigma(:,:,K(i)+1:K(i+1))) .* obj.w(K(i)+1:K(i+1)));
                 for j=1:K(i+1)
-                    p(n_beams(i)+1:n_beams(i+1)) = p(n_beams(i)+1:n_beams(i+1)) + mvnpdf(x_rot3D,[obj.mu(:,(i-1)*K(i)+j); obj.mu_energy((i-1)*K(i)+j)]',[obj.sigma(:,:,(i-1)*K(i)+j) obj.sigma_energy(:,:,(i-1)*K(i)+j)])*obj.w((i-1)*K(i)+j);
+                    p(n_beams(i)+1:n_beams(i+1)) = p(n_beams(i)+1:n_beams(i+1)) + mvnpdf(x_rot3D,[obj.mu(:,(i-1)*K(i)+j); obj.mu_energy((i-1)*K(i)+j)]',[obj.sigma{i}(:,:,(i-1)*K(i)+j) obj.sigma_energy(:,:,(i-1)*K(i)+j)])*obj.w((i-1)*K(i)+j);
                 end
             end
 	    
@@ -57,15 +57,10 @@ classdef my_gmm
                 clear x_rot;
 
                 for j=1:K(i+1)
-               	 p(n_beams(i)+1:n_beams(i+1)) = p(n_beams(i)+1:n_beams(i+1)) + mvnpdf(x_rot2D,obj.mu(:,(i-1)*K(i)+j)',obj.sigma(:,:,(i-1)*K(i)+j))*obj.w((i-1)*K(i)+j);
+               	 p(n_beams(i)+1:n_beams(i+1)) = p(n_beams(i)+1:n_beams(i+1)) + mvnpdf(x_rot2D,obj.mu(:,(i-1)*K(i)+j)',obj.sigma{i}(:,:,(i-1)*K(i)+j))*obj.w((i-1)*K(i)+j).*ismember(x(n_beams(i)+1:n_beams(i+1),4),obj.mu_energy((i-1)*K(i)+j));
                 end
                 end
-           end
-            %Add probability from initial energy
-           % if obj.sigma_energy > 0
-           % energyDist=gmdistribution(obj.mu_energy',obj.sigma_energy,obj.w);
-           % p = p.*pdf(energyDist,x(:,4));
-           % end
+            end
         end
     end
 end

@@ -51,14 +51,14 @@ classdef my_gmm
             end
 	    
             else
-		for i=1:B
+                for i=1:B
                 x_rot=rotateAxis(x(n_beams(i)+1:n_beams(i+1),1:3)',obj.angles(i,1),obj.angles(i,2))';
                 x_rot2D=x_rot(:,obj.idx(i,:));
                 clear x_rot;
 
-                for j=1:K(i+1)
-               	 p(n_beams(i)+1:n_beams(i+1)) = p(n_beams(i)+1:n_beams(i+1)) + mvnpdf(x_rot2D,obj.mu(:,(i-1)*K(i)+j)',obj.sigma{i}(:,:,(i-1)*K(i)+j))*obj.w((i-1)*K(i)+j).*ismember(x(n_beams(i)+1:n_beams(i+1),4),obj.mu_energy((i-1)*K(i)+j));
-                end
+                    for j=1:K(i+1)
+               	 p(n_beams(i)+1:n_beams(i+1)) = p(n_beams(i)+1:n_beams(i+1)) + mvnpdf(x_rot2D,obj.mu(:,(i-1)*K(i)+j)',obj.sigma{i}(:,:,(i-1)*K(i)+j))*obj.w((i-1)*K(i)+j).*ismembertol(x(n_beams(i)+1:n_beams(i+1),4),obj.mu_energy((i-1)*K(i)+j),1e-5);
+                    end
                 end
             end
         end

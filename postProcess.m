@@ -106,7 +106,7 @@ mu_energy=horzcat(mu_energy, stf(i).ray(:).energy);
 K(i+1)=stf(i).totalNumOfBixels;
 
 %get beam std deviation
-sigmae_bev(i) = {rotateAxis(sigmae',stf(i).couchAngle,stf(i).gantryAngle)};
+sigmae_bev(i) = {rotateAxis(sqrt(sigmae'),stf(i).couchAngle,stf(i).gantryAngle).^2};
 end
 
 %Set standard deviations 

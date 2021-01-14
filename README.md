@@ -2,13 +2,17 @@
 Uncertainty Quantification post-processing for output from TopasMC engine for RT dose calculations
 
 
-## Example 
+## Examples 
 
 Call 
 
 postProcess( './example/EventMaps/', './example/WorkspaceBoxPhantom_Pia_SAD1e6.mat', 1 , [25 60 25] , [9 9 9] , 50,0, 0)
 
-to compute the example with 3mm standard deviation for set-up errors, no range uncertainties and 50 shifts to compute the variance estimate.
+to compute the example with 3mm standard deviation for set-up errors, no range uncertainties and 50 shifts to compute the variance estimate or
+
+postProcess( './small_example/EventMaps/', './example/WaterBox_OnePencilBeam.mat', 1 , [25 60 25] , [9 9 9] , 50,0, 0)
+
+to compute the example with just one pencil beam in a water box for 3mm standard deviation for set-up errors, no range uncertainties and 50 shifts to compute the variance.
 
 ## How to run the TOPAS simulation 
 

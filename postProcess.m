@@ -95,8 +95,12 @@ mu_i = stf(i).sourcePoint + vec_dirs*(SAD_mm - nozzleAxialDistance_mm);
 
 %rotate into beams eye view (one of the axis is parallel to beam direction)
 mup_i = rotateAxis(mu_i',stf(i).couchAngle,stf(i).gantryAngle);
-[~,ix]=min(var(mup_i'));
-rot_idx_bev(i,:)=setdiff([1 2 3],ix);
+if min(var(mup_i,[],2)) > 0
+    [~,ix]=min(var(mup_i,[],2));
+    rot_idx_bev(i,:)=setdiff([1 2 3],ix);
+else
+    rot_idx_bev(i,:)=[1 3];
+end
 mup = horzcat(mup,squeeze(mup_i(rot_idx_bev(i,:),:)));
 
 %get mean of energy distribution
